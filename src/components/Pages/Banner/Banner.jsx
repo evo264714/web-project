@@ -1,7 +1,7 @@
-import slider1 from '../../../../src/assets/slide-1.webp'
+import slider1 from '../../../../src/assets/slide-1.jpg'
 import slider2 from '../../../../src/assets/slide-2.jpg'
-import slider3 from '../../../../src/assets/slide-3.webp'
-import slider4 from '../../../../src/assets/slide-4.jpeg'
+import slider3 from '../../../../src/assets/slide-3.jpg'
+import slider4 from '../../../../src/assets/slide-4.jpg'
 import AwesomeSlider from 'react-awesome-slider';
 import './Banner.css'
 import 'react-awesome-slider/dist/styles.css';

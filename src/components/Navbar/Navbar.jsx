@@ -7,8 +7,8 @@ const Navbar = () => {
         background: 'linear-gradient(to right, #2c3e50, #1a1a1a)',
         color: 'white',
     }
-    const { user, logOut } = useContext(AuthContext);
-    console.log(user);
+    const { user, auth, logOut } = useContext(AuthContext);
+    console.log(auth.currentUser);
 
     const handleLogOut = () => {
         logOut()
@@ -18,7 +18,7 @@ const Navbar = () => {
 
     return (
         <div className='sm:w-full w-full md:flex items-center justify-between p-6' style={headerStyle}>
-            <NavLink to="/" className='text-4xl font-bold text-orange-400'>UIU Healthcare System</NavLink>
+            <NavLink to="/" className='text-4xl font-bold text-orange-400'>UIU Healthcare</NavLink>
 
             <nav className='text-orange-400'>
                 <NavLink className='me-6'
@@ -33,7 +33,7 @@ const Navbar = () => {
                 </NavLink>
 
                 <NavLink className='me-6'
-                    to="/search"
+                    to="/hospitals"
                     style={({ isActive }) => {
                         return {
                             fontWeight: isActive ? "bold" : "",
@@ -52,19 +52,33 @@ const Navbar = () => {
                 >
                     Register
                 </NavLink> : ""}
+                {user && user.email === 'admin@admin.com' ? (
+                    <NavLink
+                        className='me-6'
+                        to="/dashboard"
+                        style={({ isActive }) => {
+                            return {
+                                fontWeight: isActive ? "bold" : "",
+                            };
+                        }}
+                    >
+                        Dashboard
+                    </NavLink>
+                ) : ""}
                 {user ? <NavLink className='me-6'
-                    to="faq"
+                    to="appointment"
                     style={({ isActive }) => {
                         return {
                             fontWeight: isActive ? "bold" : "",
                         };
                     }}
                 >
-                    FAQs
+                    Appointment
                 </NavLink> : ''}
 
-                {user ? <NavLink className='me-6'
-                    to="/prescription"
+
+                {user && user.email !== 'admin@admin.com'?  <NavLink className='me-6'
+                    to="prescriptions"
                     style={({ isActive }) => {
                         return {
                             fontWeight: isActive ? "bold" : "",
@@ -82,7 +96,12 @@ const Navbar = () => {
 
                 {user ?
 
-                    <button onClick={handleLogOut} className="btn btn-primary">Logout</button> :
+                    <button
+                        onClick={handleLogOut}
+                        className="bg-orange-400 hover:bg-orange-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                    >
+                        Logout
+                    </button> :
 
                     <div className="flex items-center">
 

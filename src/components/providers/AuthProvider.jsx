@@ -9,8 +9,10 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 
+
 const AuthProvider = ({children}) => {
     const [user, setUser ] = useState(null);
+    console.log(user);
     const [loading, setLoading] = useState(true);
 
     const createUser = (email, password) =>{
@@ -31,6 +33,7 @@ const AuthProvider = ({children}) => {
         const unsubscribe = onAuthStateChanged(auth, loggedUser =>{
             setUser(loggedUser);
             setLoading(false);
+            console.log(loggedUser);
         });
         return() =>{
              unsubscribe()

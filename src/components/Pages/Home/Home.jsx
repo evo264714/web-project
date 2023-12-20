@@ -1,12 +1,13 @@
-import Search from "../../Search/Search";
+
+import AppointmentForm from "../../AppointmentForm/AppointmentForm";
 import Banner from "../Banner/Banner";
+import FAQSection from './../../FAQ/FAQSection';
 
 const Home = () => {
     return (
         <div>
             <Banner></Banner>
-
-            <Search className='text-center' />
+            <FAQSection></FAQSection>
         </div>
     );
 };

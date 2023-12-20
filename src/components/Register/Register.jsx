@@ -1,45 +1,122 @@
+// import { useContext, useState } from "react";
+// import { Link, Navigate, useNavigate } from "react-router-dom";
+// import { updateProfile } from "firebase/auth";
+// import { AuthContext } from "../providers/AuthProvider";
+// import Swal from "sweetalert2";
+
+// const Register = () => {const { createUser, auth } = useContext(AuthContext);
+// const [error, setError] = useState('');
+// const [success, setSuccess] = useState('');
+// const navigate = useNavigate();
+
+// const handleRegistration = event => {
+//     event.preventDefault();
+//     const form = event.target;
+//     const name = form.name.value;
+//     const email = form.email.value;
+//     const password = form.password.value;
+//     const photo = form.photo.value;
+
+//     createUser(email, password)
+//         .then(result => {
+//             const user = result.user;
+//             updateProfile(auth.currentUser, {
+//                 displayName: name, photoURL: photo
+//             })
+//             .then(() => {
+//                 // Prepare user data with the role property
+//                 const saveUser = { name: name, email: email, role: 'user' };
+
+//                 // Send user data to the backend
+//                 fetch('http://localhost:5000/users', {
+//                     method: 'POST',
+//                     headers: { 'content-type': 'application/json' },
+//                     body: JSON.stringify(saveUser)
+//                 })
+//                 .then(res => res.json())
+//                 .then(data => {
+//                     if (data.insertedId) {
+//                         setError('');
+//                         form.reset();
+//                         Swal.fire({
+//                             position: 'top-end',
+//                             icon: 'success',
+//                             title: 'User created successfully',
+//                             showConfirmButton: false,
+//                             timer: 1500
+//                         });
+//                         navigate('/');
+//                     }
+//                 });
+//             })
+//             .catch(error => {
+//                 setError(error.message);
+//             });
+//         })
+//         .catch(error => {
+//             setError(error.message);
+//         });
+// };
+
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { updateProfile } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
+import { updateProfile } from "firebase/auth";
+import Swal from "sweetalert2";
 
 const Register = () => {
-
     const { createUser, auth } = useContext(AuthContext);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleRegistration = event => {
         event.preventDefault();
-        setSuccess('')
         const form = event.target;
         const name = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
         const photo = form.photo.value;
-        console.log(name, email, password, photo);
 
-        createUser(email, password) 
-        .then(result =>{
-            const user = result.user;
-            console.log(user);
-            updateProfile(auth.currentUser,{
-                displayName: name, photoURL: photo
+        createUser(email, password)
+            .then(result => {
+                const user = result.user;
+                return updateProfile(auth.currentUser, {
+                    displayName: name, photoURL: photo
+                }).then(() => user); // Continue with the updated user data
             })
-            .then(() =>{
-                
+            .then(user => {
+                // Prepare user data with the role property
+                const saveUser = { name: name, email: email, role: 'user' };
+
+                // Send user data to the backend
+                return fetch('http://localhost:5000/users', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify(saveUser)
+                });
             })
-            .catch(error =>{
-                console.log(error);
+            .then(res => res.json())
+            .then(data => {
+                if (data.insertedId) {
+                    form.reset();
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'User created successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    navigate('/');
+                } else {
+                    throw new Error('Failed to save user data');
+                }
             })
-            setError('')
-            form.reset();
-            setSuccess('Successfully Registered')
-        })
-        .catch(error =>{
-            setError(error.message);
-        })
-    }
+            .catch(error => {
+                console.error('Registration Error:', error);
+                setError('Failed to register. Please try again.');
+            });
+    };
+
     return (
         <div className="flex items-center justify-center h-screen">
             <div className="flex-1">
@@ -91,10 +168,10 @@ const Register = () => {
                             value='Register'
                             className="w-full py-2 bg-accent text-white rounded-lg hover:bg-success"
                         />
-                        
+
                         <label>
                             <span className="text-red-600">{error}</span>
-                            <span className="text-green-600">{success}</span>
+                            <span className="text-green-600">{}</span>
                         </label>
 
                         <p className="mt-4">Already Have An Account? Please Login
